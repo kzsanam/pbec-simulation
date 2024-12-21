@@ -9,7 +9,7 @@ class MultiplePlotter:
     ):
         self.res = res
         # do not show first points because it is not stabilised yet
-        self.start_point = 1000
+        self.start_point = 0
 
     def show(self):
         for single_res in self.res:
