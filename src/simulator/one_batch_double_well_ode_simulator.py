@@ -5,20 +5,13 @@ from config.config import Config
 from simulator.simulator import Simulator
 
 
-class DoubleWellOdeSimulator(Simulator):
+class OneBatchDoubleWellOdeSimulator(Simulator):
     def __init__(self, config: Config):
         self.config = config
 
     def run(self):
         # define variables with shorter names for convenience
-        bd = self.config.bd
-        M = self.config.molecule_number
-        b_abs = self.config.b_abs
-        kappa = self.config.kappa
-        b_emission = self.config.b_emission
-        P0 = self.config.cw_pump
-        p00 = self.config.perturbation
-        t = self.config.time_range
+        bd, M, b_abs, kappa, b_emission, P0, p00, t = self._config_to_vars(self.config)
 
         m_exited_init, n1_init, n2_init = self.define_initial_conditions()
 
@@ -33,16 +26,10 @@ class DoubleWellOdeSimulator(Simulator):
 
     def define_initial_conditions(self):
         # define variables with shorter names for convenience
-        bd = self.config.bd
-        M = self.config.molecule_number
-        b_abs = self.config.b_abs
-        kappa = self.config.kappa
-        b_emission = self.config.b_emission
-        P0 = self.config.cw_pump
-        p00 = self.config.perturbation
+        bd, M, b_abs, kappa, b_emission, P0, p00, t = self._config_to_vars(self.config)
 
         m_exited_init = (M * P0 * (M * b_abs + kappa)
-                      / (b_emission * (M * P0 + kappa) + b_abs * P0 * M + P0 * kappa))
+                         / (b_emission * (M * P0 + kappa) + b_abs * P0 * M + P0 * kappa))
 
         n1_init = P0 / kappa * M
         n2_init = P0 / kappa * M
@@ -63,42 +50,24 @@ class DoubleWellOdeSimulator(Simulator):
         return m_exited_init_final, n1_init_final, n2_init_final
 
     def fit_model(self, z, t, params):
-        dmeff_dt = self.meff_func(z[0], z[1], z[2], t, params)
+        dmeff_dt = self.m_exited_func(z[0], z[1], z[2], t, params)
         dn1_dt = self.n1_func(z[0], z[1], z[2], t, params)
         dn2_dt = self.n2_func(z[0], z[1], z[2], t, params)
         dz_dt = [dmeff_dt, dn1_dt, dn2_dt]
         return dz_dt
 
     def n1_func(self, Me, n1, n2, t, params):
-        bD = params[0]
-        kappa = params[1]
-        B21 = params[2]
-        M = params[3]
-        P0 = params[4]
-        B12 = params[5]
-        p00 = params[6]
+        bD, kappa, B21, M, P0, B12, p00 = self._params_to_vars(params)
         J = self.config.well_coupling
         return -(B12 * M + kappa) * n1 + Me * (B21 + (B12 + B21) * n1) - J * n1 + J * n2
 
     def n2_func(self, Me, n1, n2, t, params):
-        bD = params[0]
-        kappa = params[1]
-        B21 = params[2]
-        M = params[3]
-        P0 = params[4]
-        B12 = params[5]
-        p00 = params[6]
+        bD, kappa, B21, M, P0, B12, p00 = self._params_to_vars(params)
         J = self.config.well_coupling
         return -(B12 * M + kappa) * n2 + Me * (B21 + (B12 + B21) * n2) - J * n2 + J * n1
 
-    def meff_func(self, Me, n1, n2, t, params):
-        bD = params[0]
-        kappa = params[1]
-        B21 = params[2]
-        M = params[3]
-        P0 = params[4]
-        B12 = params[5]
-        p00 = params[6]
+    def m_exited_func(self, Me, n1, n2, t, params):
+        bD, kappa, B21, M, P0, B12, p00 = self._params_to_vars(params)
         n = n1 + n2
         return ((M * (B12 * n + (self.config.pulse_func(t) * p00 + P0))
                  - Me * (B21 + (B12 + B21) * n + (self.config.pulse_func(t) * p00 + P0)))

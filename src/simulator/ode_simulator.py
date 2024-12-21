@@ -11,14 +11,7 @@ class OdeSimulator(Simulator):
 
     def run(self):
         # define variables with shorter names for convenience
-        bd = self.config.bd
-        M = self.config.molecule_number
-        b_abs = self.config.b_abs
-        kappa = self.config.kappa
-        b_emission = self.config.b_emission
-        P0 = self.config.cw_pump
-        p00 = self.config.perturbation
-        t = self.config.time_range
+        bd, M, b_abs, kappa, b_emission, P0, p00, t = self._config_to_vars(self.config)
 
         m_exited_init, n_init = self.define_initial_conditions()
 
@@ -33,13 +26,7 @@ class OdeSimulator(Simulator):
 
     def define_initial_conditions(self):
         # define variables with shorter names for convenience
-        bd = self.config.bd
-        M = self.config.molecule_number
-        b_abs = self.config.b_abs
-        kappa = self.config.kappa
-        b_emission = self.config.b_emission
-        P0 = self.config.cw_pump
-        p00 = self.config.perturbation
+        bd, M, b_abs, kappa, b_emission, P0, p00, t = self._config_to_vars(self.config)
 
         m_exited_init = (M * P0 * (M * b_abs + kappa)
                          / (b_emission * (M * P0 + kappa) + b_abs * P0 * M + P0 * kappa))
@@ -67,23 +54,13 @@ class OdeSimulator(Simulator):
         return dz_dt
 
     def n_func(self, Me, n, t, params):
-        bD = params[0]
-        kappa = params[1]
-        B21 = params[2]
-        M = params[3]
-        P0 = params[4]
-        B12 = params[5]
-        p00 = params[6]
+        bD, kappa, B21, M, P0, B12, p00 = self._params_to_vars(params)
+
         return -(B12 * M + kappa) * n + Me * (B21 + (B12 + B21) * n)
 
     def meff_func(self, Me, n, t, params):
-        bD = params[0]
-        kappa = params[1]
-        B21 = params[2]
-        M = params[3]
-        P0 = params[4]
-        B12 = params[5]
-        p00 = params[6]
+        bD, kappa, B21, M, P0, B12, p00 = self._params_to_vars(params)
+
         return ((M * (B12 * n + (self.config.pulse_func(t) * p00 + P0))
                  - Me * (B21 + (B12 + B21) * n + (self.config.pulse_func(t) * p00 + P0)))
                 - Me * self.config.spontaneous_loss)
