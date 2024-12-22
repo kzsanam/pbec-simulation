@@ -1,5 +1,5 @@
-from job.one_pump_two_bath_well_multiple_frequency_simulate_job import \
-    OnePumpTwoBathWellMultipleFrequencySimulateJob
+from job.diff_coupling_one_pump_two_bath_well_multiple_frequency_simulate_job import \
+    DiffCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob
 
 if __name__ == "__main__":
     # choose the job you are interested in here
@@ -21,7 +21,11 @@ if __name__ == "__main__":
 
     # will solve ode for double well and 2 baths when pumping only one site
     # and plot its solution for multiple frequencies
-    job = OnePumpTwoBathWellMultipleFrequencySimulateJob()
+    # job = OnePumpTwoBathWellMultipleFrequencySimulateJob()
+
+    # will solve ode for double well and 2 baths with different couplings when pumping only one site
+    # and plot its solution for multiple frequencies
+    job = DiffCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob()
 
     # run the job
     job.run()

@@ -22,7 +22,7 @@ class OnePumpTwoBatchDoubleWellOdeSimulator(Simulator):
         z0 = [m_exited1_init, m_exited2_init, n1_init, n2_init]
 
         z = odeint(fit_model_func, z0, t)
-        return t, z, n1_init, n2_init, max(z[:, 0]) - m_exited1_init, max(z[:, 0]) - m_exited2_init
+        return t, z, n1_init, n2_init, max(z[:, 0]) - m_exited1_init, max(z[:, 1]) - m_exited2_init
 
     def define_initial_conditions(self):
         # define variables with shorter names for convenience
@@ -79,11 +79,15 @@ class OnePumpTwoBatchDoubleWellOdeSimulator(Simulator):
 
         return ((M * (B12 * n1 + (self.config.pulse_func(t) * p00 + P0))
                  - Me1 * (B21 + (B12 + B21) * n1 + (self.config.pulse_func(t) * p00 + P0)))
-                - Me1 * self.config.spontaneous_loss)
+                - Me1 * self.config.spontaneous_loss
+                # + self.config.well_coupling * (M - Me1)
+                )
 
     def m_exited2_func(self, Me1, Me2, n1, n2, t, params):
         bD, kappa, B21, M, P0, B12, p00 = self._params_to_vars(params)
 
-        return ((M * (B12 * n2 + (self.config.pulse_func(t) * p00 + P0))
-                 - Me2 * (B21 + (B12 + B21) * n2))
-                - Me2 * self.config.spontaneous_loss)
+        return ((M * (B12 * n2 + (P0))
+                 - Me2 * (B21 + (B12 + B21) * n2 + (P0)))
+                - Me2 * self.config.spontaneous_loss
+                # + self.config.well_coupling * (M - Me2)
+                )
