@@ -19,6 +19,7 @@ class Config:
     spontaneous_loss: float = 0.25
     pulse_func: Callable[[float], float] = lambda x: np.sin(x)
     well_coupling: float = 0
+    molecular_bath_coupling: float = 0
 
     @property
     def b_abs(self) -> float:

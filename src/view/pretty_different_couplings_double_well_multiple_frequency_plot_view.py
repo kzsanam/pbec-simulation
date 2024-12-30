@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 from numpy import ndarray, dtype, floating
 
 
-class DifferentCouplingsDoubleWellMultipleFrequencyPlotter:
+class PrettyDifferentCouplingsDoubleWellMultipleFrequencyPlotter:
     def __init__(
             self,
             res: list[tuple[Any, Any, Any, Any]],
@@ -46,19 +46,23 @@ class DifferentCouplingsDoubleWellMultipleFrequencyPlotter:
     def different_couplings_amplitude_show(self):
         i = 0
         for coupling in self.couplings:
-            self.amplitude_show(self.res[i:i + self.frequencies.size], coupling)
+            coupling_index = i/self.frequencies.size
+            self.amplitude_show(self.res[i:i + self.frequencies.size], coupling, coupling_index)
             i += self.frequencies.size
 
         avg_n1 = np.round(np.mean(self.res[2][1][:, 2]), 1)
         avg_n2 = np.round(np.mean(self.res[3][1][:, 3]), 1)
 
+        plt.xlim(0, 0.5)
+        plt.ylim(0, 1.1)
+
         plt.title(f"photon number in 1 and 2 wells {avg_n1} and {avg_n2}")
-        plt.ylabel("normalised module of amplitude")
-        plt.xlabel("frequency, GHz/2pi")
+        plt.ylabel(r'Normalised response, $\mathrm{A/A_{max}}$')
+        plt.xlabel(r'Frequency, $\Omega/2\pi$ (GHz)')
         plt.legend()
         plt.show()
 
-    def amplitude_show(self, coupling_res, coupling):
+    def amplitude_show(self, coupling_res, coupling, coupling_index):
         first_well_amplitude = np.array(list(map(lambda x: self.get_amplitude(x, 2), coupling_res)))
         second_well_amplitude = np.array(
             list(map(lambda x: self.get_amplitude(x, 3), coupling_res)))
@@ -66,21 +70,41 @@ class DifferentCouplingsDoubleWellMultipleFrequencyPlotter:
         normalized_first_well_amplitude = first_well_amplitude / np.max(first_well_amplitude)
         normalized_second_well_amplitude = second_well_amplitude / np.max(second_well_amplitude)
 
-        # plt.plot(self.frequencies, first_well_amplitude, label="1 well amplitude")
-        # plt.plot(self.frequencies, second_well_amplitude, label="2 well amplitude")
+        # get opacity percentage, adding 0.5 to make the lowest value visible
+        couplings_size = self.couplings.size
+        opacity_percentage = round((coupling_index + 0.5)/(couplings_size + 0.5), 2)
 
         plt.plot(
             self.frequencies,
             normalized_first_well_amplitude,
-            label=f"1 well, coupling {np.round(coupling, 1)}"
+            label=f"1 well, coupling {np.round(coupling, 1)}",
+            color="red",
+            alpha=opacity_percentage
         )
+        # fill the area below
+        # plt.fill_between(
+        #     self.frequencies,
+        #     normalized_first_well_amplitude,
+        #     color="red",
+        #     alpha=opacity_percentage/30
+        # )
+
         plt.plot(
             self.frequencies,
             normalized_second_well_amplitude,
-            label=f"2 well, coupling {np.round(coupling, 1)}"
+            label=f"2 well, coupling {np.round(coupling, 1)}",
+            color="blue",
+            alpha=opacity_percentage
         )
+        # fill the area below
+        # plt.fill_between(
+        #     self.frequencies,
+        #     normalized_second_well_amplitude,
+        #     color="blue",
+        #     alpha=opacity_percentage/30
+        # )
 
     def get_amplitude(self, single_res, index: int):
-        # assume that amplitude is abs(max - mean)
+        # assume that amplitude is abs(max - min)
         n = single_res[1][:, index][self.start_point:]
         return np.abs(np.max(n) - np.min(n))/2

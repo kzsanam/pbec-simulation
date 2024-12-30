@@ -80,7 +80,7 @@ class OnePumpTwoBatchDoubleWellOdeSimulator(Simulator):
         return ((M * (B12 * n1 + (self.config.pulse_func(t) * p00 + P0))
                  - Me1 * (B21 + (B12 + B21) * n1 + (self.config.pulse_func(t) * p00 + P0)))
                 - Me1 * self.config.spontaneous_loss
-                # + self.config.well_coupling * (M - Me1)
+                + self.config.molecular_bath_coupling * n2 * (M - Me1)
                 )
 
     def m_exited2_func(self, Me1, Me2, n1, n2, t, params):
@@ -89,5 +89,5 @@ class OnePumpTwoBatchDoubleWellOdeSimulator(Simulator):
         return ((M * (B12 * n2 + (P0))
                  - Me2 * (B21 + (B12 + B21) * n2 + (P0)))
                 - Me2 * self.config.spontaneous_loss
-                # + self.config.well_coupling * (M - Me2)
+                + self.config.molecular_bath_coupling * n1 * (M - Me2)
                 )

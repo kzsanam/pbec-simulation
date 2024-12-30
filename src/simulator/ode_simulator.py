@@ -48,9 +48,9 @@ class OdeSimulator(Simulator):
         return m_exited_init_final, n_init_final
 
     def fit_model(self, z, t, params):
-        dmeff_dt = self.meff_func(z[0], z[1], t, params)
+        dm_excited_dt = self.meff_func(z[0], z[1], t, params)
         dn_dt = self.n_func(z[0], z[1], t, params)
-        dz_dt = [dmeff_dt, dn_dt]
+        dz_dt = [dm_excited_dt, dn_dt]
         return dz_dt
 
     def n_func(self, Me, n, t, params):
