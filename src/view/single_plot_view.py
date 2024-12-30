@@ -1,7 +1,9 @@
 from matplotlib import pyplot as plt
 
+from view.plot_view import Plotter
 
-class SinglePlotter:
+
+class SinglePlotter(Plotter):
     def __init__(self, t, n):
         self.n = n
         self.t = t

@@ -7,18 +7,20 @@ from numpy import ndarray, dtype, floating
 from view.plot_view import Plotter
 
 
-class PrettyDifferentCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
+class PrettyDifferentAllCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
     def __init__(
             self,
             res: list[tuple[Any, Any, Any, Any]],
             frequencies: ndarray[tuple[int], dtype[floating]],
-            couplings: ndarray[tuple[int], dtype[floating]]
+            couplings: ndarray[tuple[int], dtype[floating]],
+            bath_couplings: ndarray[tuple[int], dtype[floating]],
     ):
         self.res = res
         # do not show first points because it is not stabilised yet
         self.start_point = 1000
         self.frequencies = frequencies
         self.couplings = couplings
+        self.bath_couplings = bath_couplings
 
     def show(self):
         self.different_couplings_amplitude_show()
@@ -48,8 +50,14 @@ class PrettyDifferentCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
     def different_couplings_amplitude_show(self):
         i = 0
         for coupling in self.couplings:
-            coupling_index = i/self.frequencies.size
-            self.amplitude_show(self.res[i:i + self.frequencies.size], coupling, coupling_index)
+            coupling_index = int(i / self.frequencies.size)
+            bath_coupling = self.bath_couplings[coupling_index]
+            self.amplitude_show(
+                self.res[i:i + self.frequencies.size],
+                coupling,
+                coupling_index,
+                bath_coupling
+            )
             i += self.frequencies.size
 
         avg_n1 = np.round(np.mean(self.res[2][1][:, 2]), 1)
@@ -64,7 +72,7 @@ class PrettyDifferentCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
         plt.legend()
         plt.show()
 
-    def amplitude_show(self, coupling_res, coupling, coupling_index):
+    def amplitude_show(self, coupling_res, coupling, coupling_index, bath_coupling):
         first_well_amplitude = np.array(list(map(lambda x: self.get_amplitude(x, 2), coupling_res)))
         second_well_amplitude = np.array(
             list(map(lambda x: self.get_amplitude(x, 3), coupling_res)))
@@ -77,7 +85,7 @@ class PrettyDifferentCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
         plt.plot(
             self.frequencies,
             normalized_first_well_amplitude,
-            label=f"1 well, $\Gamma=$ {np.round(coupling, 1)} GHz",
+            label=fr'1 well, $\Gamma^\prime=${np.round(bath_coupling * 1e9, 2)} Hz, $\Gamma=${np.round(coupling, 2)} GHz',
             color="red",
             alpha=opacity_percentage
         )
@@ -92,7 +100,7 @@ class PrettyDifferentCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
         plt.plot(
             self.frequencies,
             normalized_second_well_amplitude,
-            label=f"2 well, $\Gamma=$ {np.round(coupling, 1)} GHz",
+            label=fr'2 well, $\Gamma^\prime=${np.round(bath_coupling * 1e9, 2)} Hz, $\Gamma=${np.round(coupling, 2)} GHz',
             color="blue",
             alpha=opacity_percentage
         )

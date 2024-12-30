@@ -1,8 +1,10 @@
 from matplotlib import pyplot as plt
 from numpy import ndarray, dtype, floating
 
+from view.plot_view import Plotter
 
-class MultiplePlotter:
+
+class MultiplePlotter(Plotter):
     def __init__(
             self,
             res: list[tuple[ndarray[tuple[int], dtype[floating]], tuple]],

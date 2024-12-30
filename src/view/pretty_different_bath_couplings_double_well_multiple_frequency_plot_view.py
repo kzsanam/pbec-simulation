@@ -7,7 +7,7 @@ from numpy import ndarray, dtype, floating
 from view.plot_view import Plotter
 
 
-class PrettyDifferentCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
+class PrettyDifferentBathCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
     def __init__(
             self,
             res: list[tuple[Any, Any, Any, Any]],
@@ -48,7 +48,7 @@ class PrettyDifferentCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
     def different_couplings_amplitude_show(self):
         i = 0
         for coupling in self.couplings:
-            coupling_index = i/self.frequencies.size
+            coupling_index = i / self.frequencies.size
             self.amplitude_show(self.res[i:i + self.frequencies.size], coupling, coupling_index)
             i += self.frequencies.size
 
@@ -77,7 +77,7 @@ class PrettyDifferentCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
         plt.plot(
             self.frequencies,
             normalized_first_well_amplitude,
-            label=f"1 well, $\Gamma=$ {np.round(coupling, 1)} GHz",
+            label=fr'1 well, $\Gamma^\prime=${np.round(coupling * 1e9, 2)} Hz',
             color="red",
             alpha=opacity_percentage
         )
@@ -92,7 +92,7 @@ class PrettyDifferentCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
         plt.plot(
             self.frequencies,
             normalized_second_well_amplitude,
-            label=f"2 well, $\Gamma=$ {np.round(coupling, 1)} GHz",
+            label=f"2 well, $\Gamma^\prime=${np.round(coupling * 1e9, 2)} Hz",
             color="blue",
             alpha=opacity_percentage
         )

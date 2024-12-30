@@ -4,8 +4,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 from numpy import ndarray, dtype, floating
 
+from view.plot_view import Plotter
 
-class DifferentCouplingsDoubleWellMultipleFrequencyPlotter:
+
+class DifferentCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
     def __init__(
             self,
             res: list[tuple[Any, Any, Any, Any]],
@@ -59,7 +61,7 @@ class DifferentCouplingsDoubleWellMultipleFrequencyPlotter:
         plt.show()
 
     def amplitude_show(self, coupling_res, coupling):
-        first_well_amplitude = np.array(list(map(lambda x: self.get_amplitude(x, 2), coupling_res)))
+        first_well_amplitude = np.array(list(map(lambda x: self.get_amplitude(x, 2, self.start_point), coupling_res)))
         second_well_amplitude = np.array(
             list(map(lambda x: self.get_amplitude(x, 3), coupling_res)))
 
@@ -79,8 +81,3 @@ class DifferentCouplingsDoubleWellMultipleFrequencyPlotter:
             normalized_second_well_amplitude,
             label=f"2 well, coupling {np.round(coupling, 1)}"
         )
-
-    def get_amplitude(self, single_res, index: int):
-        # assume that amplitude is abs(max - mean)
-        n = single_res[1][:, index][self.start_point:]
-        return np.abs(np.max(n) - np.min(n))/2

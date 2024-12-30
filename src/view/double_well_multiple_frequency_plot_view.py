@@ -4,8 +4,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 from numpy import ndarray, dtype, floating
 
+from view.plot_view import Plotter
 
-class DoubleWellMultipleFrequencyPlotter:
+
+class DoubleWellMultipleFrequencyPlotter(Plotter):
     def __init__(
             self,
             res:  list[tuple[Any, Any]],
@@ -59,8 +61,3 @@ class DoubleWellMultipleFrequencyPlotter:
         plt.xlabel(r"frequency, GHz/2pi")
         plt.legend()
         plt.show()
-
-    def get_amplitude(self, single_res, index: int):
-        # assume that amplitude is abs(max - mean)
-        n = single_res[1][:, index][self.start_point:]
-        return np.abs(np.max(n) - np.mean(n))

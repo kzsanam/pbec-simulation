@@ -1,9 +1,10 @@
-import numpy as np
 from matplotlib import pyplot as plt
 from numpy import ndarray, dtype, floating
 
+from view.plot_view import Plotter
 
-class MultipleFrequencyPlotter:
+
+class MultipleFrequencyPlotter(Plotter):
     def __init__(
             self,
             res: list[tuple[ndarray[tuple[int], dtype[floating]], tuple]],
@@ -38,8 +39,3 @@ class MultipleFrequencyPlotter:
         plt.ylabel("amplitude")
         plt.xlabel(r"frequency, Hz/2pi")
         plt.show()
-
-    def get_amplitude(self, single_res):
-        # assume that amplitude is max - mean
-        n = single_res[1][self.start_point:]
-        return np.abs(np.max(n) - np.mean(n))
