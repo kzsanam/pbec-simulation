@@ -14,7 +14,6 @@ class DiffBathCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob(SimulateJob
     frequencies_array = np.arange(.0, 1, .01) + .015
     # bath_couplings_array = np.arange(0, 10, 3) * 1e-11
     bath_couplings_array = np.array([0.01, .1, .5]) * 1e-9
-    couplings_array = np.arange(0.1, 1, .4)
 
     # creating an array of frequencies and couplings as
     # [frequency_1, coupling_1, bath_coupling_1, ..., frequency_n, coupling_1, batch_coupling_1,
@@ -29,7 +28,8 @@ class DiffBathCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob(SimulateJob
                 time_range=np.arange(0, 50, 0.01),
                 molecule_number=2 * 6 * 1e9,
                 perturbation=.1 * 1e-6,
-                cw_pump=5.227 * 1e-3,
+                # cw_pump=5.227 * 1e-3,
+                cw_pump=5.217 * 1e-3,
                 well_coupling=0,
                 molecular_bath_coupling=bath_coupling,
                 pulse_func=lambda x: np.sin(frequency * 2 * np.pi * x),

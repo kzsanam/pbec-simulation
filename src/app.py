@@ -1,5 +1,9 @@
 from job.diff_all_coupling_one_pump_two_bath_well_multiple_frequency_simulate_job import \
     DiffAllCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob
+from job.diff_bath_coupling_one_pump_two_bath_well_multiple_frequency_simulate_job import \
+    DiffBathCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob
+from job.diff_coupling_one_pump_two_bath_well_multiple_frequency_simulate_job import \
+    DiffCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob
 
 if __name__ == "__main__":
     # choose the job you are interested in here
@@ -25,7 +29,7 @@ if __name__ == "__main__":
 
     # will solve ode for double well and 2 baths with different couplings when pumping only one site
     # and plot its solution for multiple frequencies
-    # job = DiffCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob()
+    job = DiffCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob()
 
     # will solve ode for double well and 2 baths with different bath couplings
     # when driving only one site
@@ -36,7 +40,7 @@ if __name__ == "__main__":
     # with different photon and bath couplings
     # when driving only one site
     # and plot its solution for multiple frequencies
-    job = DiffAllCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob()
+    # job = DiffAllCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob()
 
     # run the job
     job.run()

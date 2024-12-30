@@ -47,21 +47,28 @@ class PrettyDifferentCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
 
     def different_couplings_amplitude_show(self):
         i = 0
+        line_1_list = []
+        line_2_list = []
         for coupling in self.couplings:
             coupling_index = i/self.frequencies.size
-            self.amplitude_show(self.res[i:i + self.frequencies.size], coupling, coupling_index)
+            line_1, line_2 = self.amplitude_show(self.res[i:i + self.frequencies.size], coupling, coupling_index)
             i += self.frequencies.size
+            line_1_list.append(line_1)
+            line_2_list.append(line_2)
 
         avg_n1 = np.round(np.mean(self.res[2][1][:, 2]), 1)
         avg_n2 = np.round(np.mean(self.res[3][1][:, 3]), 1)
 
+        # plot config
+        plt.gcf().set_size_inches(5, 4)
+        plt.tick_params(direction='in', top=True, right=True, bottom=True, left=True)
         plt.xlim(0, 1)
         plt.ylim(0, 1.1)
 
         plt.title(f"photon number in 1 and 2 wells {avg_n1} and {avg_n2}")
         plt.ylabel(r'Normalised response, $\mathrm{A/A_{max}}$')
         plt.xlabel(r'Frequency, $\Omega/2\pi$ (GHz)')
-        plt.legend()
+        self.set_legend(line_1_list, line_2_list)
         plt.show()
 
     def amplitude_show(self, coupling_res, coupling, coupling_index):
@@ -74,7 +81,7 @@ class PrettyDifferentCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
 
         opacity_percentage = self.get_opacity(coupling_index)
 
-        plt.plot(
+        line_1, = plt.plot(
             self.frequencies,
             normalized_first_well_amplitude,
             label=f"1 well, $\Gamma=$ {np.round(coupling, 1)} GHz",
@@ -89,7 +96,7 @@ class PrettyDifferentCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
         #     alpha=opacity_percentage/30
         # )
 
-        plt.plot(
+        line_2, = plt.plot(
             self.frequencies,
             normalized_second_well_amplitude,
             label=f"2 well, $\Gamma=$ {np.round(coupling, 1)} GHz",
@@ -103,3 +110,44 @@ class PrettyDifferentCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
         #     color="blue",
         #     alpha=opacity_percentage/30
         # )
+        return line_1, line_2
+
+    def set_legend(self, line_1_list, line_2_list):
+        # use standard legend
+        # plt.legend()
+
+        # use table legend
+        label_names = list(map(
+            lambda coupling: f"{np.round(coupling, 1)} GHz",
+            self.couplings
+        ))
+
+        names_leg = plt.legend(
+            labels=label_names,
+            title=r'$\Gamma$',
+            handlelength=0,
+            handletextpad=0,
+            loc="upper right",
+            bbox_to_anchor=(.7, 1)
+        )
+
+        lines_1_leg = plt.legend(
+            handles=line_1_list,  # * len(line_2_list),
+            labels=[''] * len(line_1_list),
+            title='Well 1',
+            loc="upper right",
+            bbox_to_anchor=(0.85, 1)
+        )
+
+        lines_2_leg = plt.legend(
+            # lines,  # Handles for the lines
+            handles=line_2_list,  # * len(line_2_list),
+            labels=[''] * len(line_2_list),
+            title='Well 2',
+            loc="upper right",
+            bbox_to_anchor=(1, 1)
+        )
+
+        plt.gca().add_artist(names_leg)
+        plt.gca().add_artist(lines_1_leg)
+        plt.gca().add_artist(lines_2_leg)

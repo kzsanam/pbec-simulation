@@ -35,6 +35,7 @@ class DiffAllCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob(SimulateJob)
                 molecule_number=2 * 6 * 1e9,
                 perturbation=.1 * 1e-6,
                 cw_pump=5.227 * 1e-3,
+                # cw_pump=5.217 * 1e-3,
                 well_coupling=coupling,
                 molecular_bath_coupling=bath_coupling,
                 pulse_func=lambda x: np.sin(frequency * 2 * np.pi * x),
