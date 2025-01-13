@@ -65,29 +65,32 @@ class OnePumpTwoBatchDoubleWellOdeSimulator(Simulator):
     def n1_func(self, Me1, Me2, n1, n2, t, params):
         bD, kappa, B21, M, P0, B12, p00 = self._params_to_vars(params)
 
-        J = self.config.well_coupling
-        return -(B12 * M + kappa) * n1 + Me1 * (B21 + (B12 + B21) * n1) - J * n1 + J * n2
+        # J = self.config.well_coupling
+        sigma = self.config.molecular_bath_coupling
+        return (-(B12 * M + kappa) * n1 + Me1 * (B21 + (B12 + B21) * n1)
+                + sigma * (-(B12 * M) * n1 + Me2 * (B21 + (B12 + B21) * n1)))
 
     def n2_func(self, Me1, Me2, n1, n2, t, params):
         bD, kappa, B21, M, P0, B12, p00 = self._params_to_vars(params)
 
-        J = self.config.well_coupling
-        return -(B12 * M + kappa) * n2 + Me2 * (B21 + (B12 + B21) * n2) - J * n2 + J * n1
+        # J = self.config.well_coupling
+        sigma = self.config.molecular_bath_coupling
+        return (-(B12 * M + kappa) * n2 + Me2 * (B21 + (B12 + B21) * n2)
+                + sigma * (-(B12 * M) * n2 + Me1 * (B21 + (B12 + B21) * n2)))
 
     def m_exited1_func(self, Me1, Me2, n1, n2, t, params):
         bD, kappa, B21, M, P0, B12, p00 = self._params_to_vars(params)
-
+        sigma = self.config.molecular_bath_coupling
         return ((M * (B12 * n1 + (self.config.pulse_func(t) * p00 + P0))
                  - Me1 * (B21 + (B12 + B21) * n1 + (self.config.pulse_func(t) * p00 + P0)))
                 - Me1 * self.config.spontaneous_loss
-                + self.config.molecular_bath_coupling * n2 * (M - Me1)
-                )
+                - sigma * (-(B12 * M) * n1 + Me2 * (B21 + (B12 + B21) * n1)))
 
     def m_exited2_func(self, Me1, Me2, n1, n2, t, params):
         bD, kappa, B21, M, P0, B12, p00 = self._params_to_vars(params)
 
+        sigma = self.config.molecular_bath_coupling
         return ((M * (B12 * n2 + (P0))
                  - Me2 * (B21 + (B12 + B21) * n2 + (P0)))
                 - Me2 * self.config.spontaneous_loss
-                + self.config.molecular_bath_coupling * n1 * (M - Me2)
-                )
+                - sigma * (-(B12 * M) * n2 + Me1 * (B21 + (B12 + B21) * n2)))

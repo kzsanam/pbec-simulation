@@ -66,12 +66,12 @@ class PrettyDifferentBathCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
 
         plt.gcf().set_size_inches(5, 4)
         plt.tick_params(direction='in', top=True, right=True, bottom=True, left=True)
-        plt.xlim(0, 1)
+        plt.xlim(0, .8)
         plt.ylim(0, 1.1)
         # plt.title(f"photon number in 1 and 2 wells {avg_n1} and {avg_n2}")
         plt.ylabel(r'Normalized response, $\mathrm{|A|/|A_{max}}|$')
         plt.xlabel(r'Frequency, $\Omega/2\pi$ (GHz)')
-        # self.set_legend(line_1_list, line_2_list)
+        self.set_legend(line_1_list, line_2_list)
         plt.show()
 
     def amplitude_show(self, coupling_res, coupling, coupling_index) -> Tuple[
@@ -88,7 +88,7 @@ class PrettyDifferentBathCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
         line_1, = plt.plot(
             self.frequencies,
             normalized_first_well_amplitude,
-            label=fr'1 well, $\Gamma^\prime=${np.round(coupling * 1e9, 2)} Hz',
+            label=fr'1 well, $\sigma=${np.round(coupling, 2)}',
             color="red",
             alpha=opacity_percentage
         )
@@ -103,7 +103,7 @@ class PrettyDifferentBathCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
         line_2, = plt.plot(
             self.frequencies,
             normalized_second_well_amplitude,
-            label=f"2 well, $\Gamma^\prime=${np.round(coupling * 1e9, 2)} Hz",
+            label=f"2 well, $\sigma=${np.round(coupling, 2)}",
             color="blue",
             alpha=opacity_percentage
         )
@@ -123,13 +123,13 @@ class PrettyDifferentBathCouplingsDoubleWellMultipleFrequencyPlotter(Plotter):
 
         # use table legend
         label_names = list(map(
-            lambda coupling: f"{np.round(coupling * 1e9, 2)} Hz",
+            lambda coupling: f"{np.round(coupling, 2)}",
             self.couplings
         ))
 
         names_leg = plt.legend(
             labels=label_names,  # ['some'] * len(line_2_list),
-            title=r'$\Gamma ^\prime$',
+            title=r'$\sigma$',
             handlelength=0,
             handletextpad=0,
             loc="upper right",

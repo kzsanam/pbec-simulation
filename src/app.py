@@ -29,12 +29,12 @@ if __name__ == "__main__":
 
     # will solve ode for double well and 2 baths with different couplings when pumping only one site
     # and plot its solution for multiple frequencies
-    job = DiffCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob()
+    # job = DiffCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob()
 
     # will solve ode for double well and 2 baths with different bath couplings
     # when driving only one site
     # and plot its solution for multiple frequencies
-    # job = DiffBathCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob()
+    job = DiffBathCouplingOnePumpTwoBathWellMultipleFrequencySimulateJob()
 
     # will solve ode for double well and 2 baths
     # with different photon and bath couplings
